@@ -79,16 +79,16 @@ void decode(char* str,char* decodefile)
 	frdnum++;
 	}
 	
-	/*---DESCRIPTION---*/	
-	fprintf(wfp,"*DESCRIPTION*\n");
+	/*---DESCRIPTION---*/
+
+	fprintf(wfp,"*DESCRIPTION*");
 	while(1){
-	if(token==NULL) break;
 	token = strtok(NULL,"/");
-	fprintf(wfp,"%s\n",token);	
+	if(token!=NULL)	fprintf(wfp,"\n%s",token);
+	else break;
 	}
 
-	fclose(wfp);	
-	
+	fclose(wfp);
 	return;
 } 
 
