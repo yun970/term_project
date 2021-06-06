@@ -8,7 +8,8 @@ void decode(char* str,char* decodefile)
 	char* token;
 	int i=0, frdnum=1 ,len;
 	len = strlen(str);
-		
+	//프로토콜에 따라 정보를 슬래쉬 단위로 구분하였기 때문에 strtok 함수를 통하여 문장을 파싱
+	
 	token = strtok(str,"/");
 	fprintf(wfp,"*USER STATUS*\nID: ");
 	fprintf(wfp,"%s\nNAME: ",token);
@@ -31,6 +32,9 @@ void decode(char* str,char* decodefile)
 	token = strtok(NULL,"/");
 
 	while(strcmp(token,"@")!=0){
+	// 아이템은 순서대로 나오지 않기 때문에 if문을 활용하여 항목 구분
+	// 이후 아이템, 친구리스트, 서명은 '@'를 기준으로 분리
+	
 		if(strncmp(token,"BM",2)==0){
 			
 			token = strtok(NULL,"/");
@@ -98,6 +102,8 @@ void errorCheck(char* encodefile, char* decodefile){
 	char buf[MAX][3000];
 
 	FILE* rfp = fopen(encodefile,"r");
+	//인코딩된 파일을 읽기형태로 오픈
+
 	int count = 0;
 
 
@@ -105,6 +111,7 @@ void errorCheck(char* encodefile, char* decodefile){
 	{
 		strcpy(buf[count], sourse); 
 		count++;
+		//인코딩된 파일을 읽어와 buf 다차원 배열에 저장
 	}
 
 	fclose(rfp);
@@ -116,8 +123,9 @@ void errorCheck(char* encodefile, char* decodefile){
 			if(strcmp(buf[i],buf[j])==0)
 			{
 				decode(buf[j],decodefile);
+				//변조되지 않은 문장을 탐색했다면 복호화 실행
 				return; 
-			} 
+			}
 		}
 	}
 	printf("정상 문장 탐색 실패");
@@ -127,6 +135,14 @@ void errorCheck(char* encodefile, char* decodefile){
 
 }
 int main(int argc, char* argv[]){
+
+	/*
+	 
+	errorCheck 함수를 호출하여 파일을 오픈, 변조 여부 확인 및 복원
+	복원이 완료되었다면 decode() 함수를 호출하여 프로토콜에 따라 압축된 파일을 복호화
+	
+	*/
+
 
 	errorCheck(argv[1],argv[2]);
 	return 0;
